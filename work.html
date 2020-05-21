@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h3>
+	I was thinking of the overall approach and presenting it as a sequence of steps seemed intuitive so here they are:
+	<br><br>
+Restore Database: I would start by restoring the GHTorrent database on to a server.<br><br> See <a href="https://github.com/gousiosg/github-mirror/tree/master/sql">https://github.com/gousiosg/github-mirror/tree/master/sql</a> for instructions on downloading and restoring GHTorrent dump onto MySQL and PostgreSQL database servers. As discussed on the call, you will need to restore only the projects table. The most recent GHTorrent dump - <a href="https://ghtorrent.org/downloads.html">https://ghtorrent.org/downloads.html</a>  -  seems to be from June 1, 2019.
+<br><br>Setup reaper Backend: When you have the database restored, checkout the README.md at <a href="https://github.com/RepoReapers/reaper">https://github.com/RepoReapers/reaper</a> which provides instructions to create the reaper_results table.
+<br><br>Run reaper: Once you have the database setup, you can move onto understanding the command line interface to reaper (described in README.md at <a href="https://github.com/RepoReapers/reaper">https://github.com/RepoReapers/reaper</a>). I would run the trivial attributes (size, for instance) first to make sure everything integrates as expected.
+<br><br>Modify GHTorrent-Dependent Attributes : Once you have reaper running and writing data to the database, you can move onto modifying existing attributes to remove the dependency on the GHTorrent database. For instance, the history attribute (<a href="https://github.com/RepoReapers/reaper/blob/master/attributes/history/main.py">https://github.com/RepoReapers/reaper/blob/master/attributes/history/main.py</a>) depends on the project_commits table but you should be able to quantify this attribute by using git log. So you will have to spend some time designing alternative implementations for these GHTorrent-dependent attributes. The paper (Curating GitHub for Engineered Software Projects) has definitions for the attributes in case you need them.
+<br><br>Modify GitHub-Dependent Attributes: I think only two attributes (management and license) use the GitHub API and, as I mentioned on the call, the GitHub API has been updated since the last time we ran reaper. You will likely have to modify these attributes to use the latest GitHub API.
+<br><br>Add New Attributes: At this point, you should be familiar with the architecture of reaper so much so that adding new attributes should be fairly trivial.
+<br><br>Note: reaper (<a href="https://github.com/RepoReapers/reaper">https://github.com/RepoReapers/reaper</a>) depends on MySQL but I reckon it should not be too difficult to use PostgreSQL instead of MySQL. I do not remember using MySQL-specific query constructs within reaper and, in my experience, I have found PostgreSQL to be more performant than MySQL. I will leave the decision to you.
+
+
+
+</h3>
+</body>
+</html>
